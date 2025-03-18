@@ -377,6 +377,7 @@ function addMarkerToMap(destination) {
     });
 }
 
+// Update the destinations list with drag-and-drop functionality
 function updateDestinationsList() {
     const listElement = document.getElementById('destinations-list');
     listElement.innerHTML = '';
@@ -394,6 +395,8 @@ function updateDestinationsList() {
     sortedDestinations.forEach((destination, index) => {
         const listItem = document.createElement('li');
         listItem.className = 'destination-item';
+        listItem.draggable = true;
+        listItem.setAttribute('data-id', destination.id);
         listItem.innerHTML = `
             <div class="destination-number">${index + 1}</div>
             <div class="destination-info">
@@ -439,6 +442,97 @@ function updateDestinationsList() {
             moveDestinationDown(id);
         });
     });
+    
+    // Add drag and drop functionality
+    setupDragAndDrop();
+}
+
+// Set up drag and drop for destinations
+function setupDragAndDrop() {
+    const listItems = document.querySelectorAll('#destinations-list .destination-item');
+    let draggedItem = null;
+    
+    listItems.forEach(item => {
+        // When drag starts
+        item.addEventListener('dragstart', function(e) {
+            draggedItem = this;
+            setTimeout(() => {
+                this.style.opacity = '0.5';
+            }, 0);
+        });
+        
+        // When drag ends
+        item.addEventListener('dragend', function() {
+            this.style.opacity = '1';
+            draggedItem = null;
+        });
+        
+        // When dragging over another item
+        item.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderTop = '2px solid #3498db';
+        });
+        
+        // When leaving another item
+        item.addEventListener('dragleave', function() {
+            this.style.borderTop = 'none';
+        });
+        
+        // When dropping onto another item
+        item.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderTop = 'none';
+            
+            if (draggedItem) {
+                const draggedId = parseInt(draggedItem.getAttribute('data-id'));
+                const targetId = parseInt(this.getAttribute('data-id'));
+                
+                if (draggedId !== targetId) {
+                    reorderDestination(draggedId, targetId);
+                }
+            }
+        });
+    });
+}
+
+// Reorder a destination by changing its date
+function reorderDestination(draggedId, targetId) {
+    // Get the sorted destinations
+    const sortedDestinations = [...tripData.destinations].sort((a, b) => {
+        if (a.date && b.date) {
+            return new Date(a.date) - new Date(b.date);
+        }
+        return 0;
+    });
+    
+    // Find the dragged and target items
+    const draggedIndex = sortedDestinations.findIndex(d => d.id === draggedId);
+    const targetIndex = sortedDestinations.findIndex(d => d.id === targetId);
+    
+    if (draggedIndex < 0 || targetIndex < 0) return;
+    
+    // Calculate a new date for the dragged item
+    // If moving up, set date to one day before the target
+    // If moving down, set date to one day after the target
+    const targetDate = new Date(sortedDestinations[targetIndex].date);
+    let newDate;
+    
+    if (draggedIndex > targetIndex) {
+        // Moving up
+        newDate = new Date(targetDate.getTime() - 86400000); // One day before target
+    } else {
+        // Moving down
+        newDate = new Date(targetDate.getTime() + 86400000); // One day after target
+    }
+    
+    // Update the date in the original array
+    const originalIndex = tripData.destinations.findIndex(d => d.id === draggedId);
+    tripData.destinations[originalIndex].date = newDate.toISOString().split('T')[0];
+    
+    // Update the UI
+    updateDestinationsList();
+    updateRoute();
+    saveTripData();
 }
 
 // Delete a destination
@@ -474,16 +568,26 @@ function editDestination(id) {
 // Move a destination up in the list (earlier in the trip)
 function moveDestinationUp(id) {
     // Find the destination index
-    const index = tripData.destinations.findIndex(d => d.id === id);
+    const sortedDestinations = [...tripData.destinations].sort((a, b) => {
+        if (a.date && b.date) {
+            return new Date(a.date) - new Date(b.date);
+        }
+        return 0;
+    });
+    
+    const index = sortedDestinations.findIndex(d => d.id === id);
     if (index <= 0) return; // Already at the top
     
     // Get the dates
-    const currentDate = new Date(tripData.destinations[index].date);
-    const prevDate = new Date(tripData.destinations[index-1].date);
+    const currentDate = new Date(sortedDestinations[index].date);
+    const prevDate = new Date(sortedDestinations[index-1].date);
     
-    // Swap the dates
-    tripData.destinations[index].date = prevDate.toISOString().split('T')[0];
-    tripData.destinations[index-1].date = currentDate.toISOString().split('T')[0];
+    // Calculate a date between the two dates to avoid conflicts
+    const newDate = new Date(prevDate.getTime() - 86400000); // One day before the previous item
+    
+    // Update the date in the original array
+    const originalIndex = tripData.destinations.findIndex(d => d.id === id);
+    tripData.destinations[originalIndex].date = newDate.toISOString().split('T')[0];
     
     // Update the UI
     updateDestinationsList();
@@ -494,16 +598,26 @@ function moveDestinationUp(id) {
 // Move a destination down in the list (later in the trip)
 function moveDestinationDown(id) {
     // Find the destination index
-    const index = tripData.destinations.findIndex(d => d.id === id);
-    if (index < 0 || index >= tripData.destinations.length - 1) return; // Already at the bottom
+    const sortedDestinations = [...tripData.destinations].sort((a, b) => {
+        if (a.date && b.date) {
+            return new Date(a.date) - new Date(b.date);
+        }
+        return 0;
+    });
+    
+    const index = sortedDestinations.findIndex(d => d.id === id);
+    if (index < 0 || index >= sortedDestinations.length - 1) return; // Already at the bottom
     
     // Get the dates
-    const currentDate = new Date(tripData.destinations[index].date);
-    const nextDate = new Date(tripData.destinations[index+1].date);
+    const currentDate = new Date(sortedDestinations[index].date);
+    const nextDate = new Date(sortedDestinations[index+1].date);
     
-    // Swap the dates
-    tripData.destinations[index].date = nextDate.toISOString().split('T')[0];
-    tripData.destinations[index+1].date = currentDate.toISOString().split('T')[0];
+    // Calculate a date between the two dates to avoid conflicts
+    const newDate = new Date(nextDate.getTime() + 86400000); // One day after the next item
+    
+    // Update the date in the original array
+    const originalIndex = tripData.destinations.findIndex(d => d.id === id);
+    tripData.destinations[originalIndex].date = newDate.toISOString().split('T')[0];
     
     // Update the UI
     updateDestinationsList();

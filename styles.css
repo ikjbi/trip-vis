@@ -194,6 +194,20 @@ input, textarea {
     background-color: #2980b9;
 }
 
+/* Drag and drop styles */
+.destination-item {
+    cursor: grab;
+}
+
+.destination-item:active {
+    cursor: grabbing;
+}
+
+.destination-item.dragging {
+    opacity: 0.5;
+    background-color: #f0f8ff;
+}
+
 #destinations-list {
     list-style-type: none;
 }
