@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Planner</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Trip Planner</h1>
+        </header>
+        
+        <div class="app-container">
+            <div class="sidebar">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search for a location...">
+                    <button id="search-button"><i class="fas fa-search"></i></button>
+                    <button id="center-location-button" title="Center on my location"><i class="fas fa-location-arrow"></i></button>
+                </div>
+                <div class="search-options">
+                    <label>
+                        <input type="radio" name="search-option" id="search-only" checked>
+                        Search only
+                    </label>
+                    <label>
+                        <input type="radio" name="search-option" id="search-add">
+                        Search and add
+                    </label>
+                </div>
+                
+                <div class="trip-management">
+                    <h2>Trip Management</h2>
+                    <div class="form-group">
+                        <label for="trip-select">Select Trip:</label>
+                        <select id="trip-select">
+                            <!-- Trips will be added dynamically -->
+                        </select>
+                    </div>
+                    <div class="trip-buttons">
+                        <button id="new-trip-button">New Trip</button>
+                        <button id="delete-trip-button">Delete Trip</button>
+                    </div>
+                </div>
+                
+                <div class="trip-details">
+                    <h2>Trip Details</h2>
+                    <div class="trip-form">
+                        <div class="form-group">
+                            <label for="trip-name">Trip Name:</label>
+                            <input type="text" id="trip-name" placeholder="My Amazing Trip">
+                        </div>
+                        <div class="form-group">
+                            <label for="start-date">Start Date:</label>
+                            <input type="date" id="start-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="end-date">End Date:</label>
+                            <input type="date" id="end-date">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="locations-list">
+                    <h2>Destinations</h2>
+                    <ul id="destinations-list">
+                        <!-- Destinations will be added here dynamically -->
+                    </ul>
+                </div>
+                
+                <div class="controls">
+                    <button id="clear-route">Clear Route</button>
+                    <button id="export-trip">Export Trip</button>
+                    <button id="google-login">Connect to Google Drive</button>
+                    <button id="save-to-drive" disabled>Save to Drive</button>
+                    <button id="load-from-drive" disabled>Load from Drive</button>
+                </div>
+            </div>
+            
+            <div id="map"></div>
+        </div>
+    </div>
+    
+    <!-- Add Location Modal -->
+    <div id="add-location-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Destination</h2>
+            <div class="form-group">
+                <label for="location-name">Name:</label>
+                <input type="text" id="location-name" placeholder="Location name">
+            </div>
+            <div class="form-group">
+                <label for="location-date">Date:</label>
+                <input type="date" id="location-date">
+            </div>
+            <div class="form-group">
+                <label for="location-notes">Notes:</label>
+                <textarea id="location-notes" placeholder="Add notes about this destination"></textarea>
+            </div>
+            <button id="save-location">Save</button>
+        </div>
+    </div>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Leaflet Routing Machine for route planning -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    
+    <!-- Leaflet Context Menu for right-click support -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-contextmenu/1.4.0/leaflet.contextmenu.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-contextmenu/1.4.0/leaflet.contextmenu.min.js"></script>
+    
+    <!-- Google API for Drive integration -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    
+    <!-- Custom JS -->
+    <script src="app.js"></script>
+    <script src="google-drive.js"></script>
+</body>
+</html>

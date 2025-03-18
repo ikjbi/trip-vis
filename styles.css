@@ -1,0 +1,368 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+}
+
+.container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: #3498db;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+.app-container {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 60px);
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: 300px;
+    background-color: white;
+    padding: 1rem;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.search-container {
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+#search-input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+}
+
+#search-button {
+    padding: 0.5rem 0.75rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+#center-location-button {
+    padding: 0.5rem 0.75rem;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.search-options {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.trip-management, .trip-details, .locations-list {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.trip-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.trip-buttons button {
+    flex: 1;
+    padding: 0.5rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#delete-trip-button {
+    background-color: #e74c3c;
+}
+
+#trip-select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    margin-bottom: 1rem;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.form-group {
+    margin-bottom: 0.75rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: bold;
+    color: #555;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+/* Destination reordering buttons */
+.destination-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.destination-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    font-size: 0.9rem;
+    padding: 4px;
+}
+
+.destination-actions button:hover:not([disabled]) {
+    color: #3498db;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+.destination-actions button[disabled] {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Toggle directions button */
+.toggle-directions-control {
+    margin-bottom: 10px;
+}
+
+#toggle-directions-button {
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    background-color: white;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #555;
+}
+
+#toggle-directions-button.active {
+    background-color: #3498db;
+    color: white;
+}
+
+#toggle-directions-button:hover {
+    background-color: #f4f4f4;
+}
+
+#toggle-directions-button.active:hover {
+    background-color: #2980b9;
+}
+
+#destinations-list {
+    list-style-type: none;
+}
+
+.destination-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: white;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.destination-number {
+    background-color: #3498db;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+.destination-info {
+    flex: 1;
+}
+
+.destination-name {
+    font-weight: bold;
+}
+
+.destination-date {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+.destination-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.destination-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.destination-actions button:hover {
+    color: #3498db;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.controls button {
+    padding: 0.75rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.controls button:hover {
+    background-color: #2980b9;
+}
+
+#clear-route {
+    background-color: #e74c3c;
+}
+
+#clear-route:hover {
+    background-color: #c0392b;
+}
+
+#export-trip {
+    background-color: #2ecc71;
+}
+
+#export-trip:hover {
+    background-color: #27ae60;
+}
+
+#github-link {
+    background-color: #333;
+}
+
+#github-link:hover {
+    background-color: #222;
+}
+
+#map {
+    flex: 1;
+    height: 100%;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 2rem;
+    width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #333;
+}
+
+/* Leaflet custom marker styles */
+.custom-marker-label {
+    background-color: white;
+    border: 2px solid #3498db;
+    color: #3498db;
+    font-weight: bold;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        width: 100%;
+        height: 40%;
+        overflow-y: auto;
+    }
+    
+    #map {
+        height: 60%;
+    }
+}
