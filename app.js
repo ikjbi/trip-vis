@@ -474,9 +474,13 @@ function moveDestinationUp(id) {
     const index = tripData.destinations.findIndex(d => d.id === id);
     if (index <= 0) return; // Already at the top
     
-    // Swap with the previous destination
-    [tripData.destinations[index], tripData.destinations[index - 1]] = 
-    [tripData.destinations[index - 1], tripData.destinations[index]];
+    // Get the dates
+    const currentDate = new Date(tripData.destinations[index].date);
+    const prevDate = new Date(tripData.destinations[index-1].date);
+    
+    // Swap the dates
+    tripData.destinations[index].date = prevDate.toISOString().split('T')[0];
+    tripData.destinations[index-1].date = currentDate.toISOString().split('T')[0];
     
     // Update the UI
     updateDestinationsList();
@@ -490,9 +494,13 @@ function moveDestinationDown(id) {
     const index = tripData.destinations.findIndex(d => d.id === id);
     if (index < 0 || index >= tripData.destinations.length - 1) return; // Already at the bottom
     
-    // Swap with the next destination
-    [tripData.destinations[index], tripData.destinations[index + 1]] = 
-    [tripData.destinations[index + 1], tripData.destinations[index]];
+    // Get the dates
+    const currentDate = new Date(tripData.destinations[index].date);
+    const nextDate = new Date(tripData.destinations[index+1].date);
+    
+    // Swap the dates
+    tripData.destinations[index].date = nextDate.toISOString().split('T')[0];
+    tripData.destinations[index+1].date = currentDate.toISOString().split('T')[0];
     
     // Update the UI
     updateDestinationsList();
