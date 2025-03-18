@@ -24,6 +24,8 @@ const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/res
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 const APP_FOLDER_NAME = 'TripPlanner';
 
+
+
 // Initialize the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     initializeMap();
@@ -36,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Init Google API if credentials are provided
-    if (API_KEY !== 'YOUR_API_KEY' && CLIENT_ID !== 'YOUR_CLIENT_ID') {
+    // Change this inside your DOMContentLoaded event listener
+    if (CLIENT_ID && CLIENT_ID !== 'YOUR_CLIENT_ID') {
         initGoogleApi();
     } else {
         // Show setup instructions for Google Drive
