@@ -18,8 +18,8 @@ let currentTripId = null;
 // Google API variables
 let isGoogleApiInitialized = false;
 let isUserSignedIn = false;
-const API_KEY = 'YOUR_API_KEY';  // This is just a placeholder, user will need to replace this
-const CLIENT_ID = 'YOUR_CLIENT_ID';  // This is just a placeholder, user will need to replace this
+const API_KEY = '';  // This is just a placeholder, user will need to replace this
+const CLIENT_ID = '739139493324-osdlctn8hcr75h2fs074iqcddl74hgfi.apps.googleusercontent.com';  // This is just a placeholder, user will need to replace this
 const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 const APP_FOLDER_NAME = 'TripPlanner';
