@@ -62,7 +62,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('google-login').innerText = 'Setup Google Drive';
         document.getElementById('google-login').addEventListener('click', showGoogleSetupInstructions);
     }
+    // Rebuild modal event listeners
+    rebuildModalEventListeners();
 });
+console.log("Script loaded successfully");
+
 
 function addSearchOptions() {
     const searchContainer = document.querySelector('.search-container');
@@ -407,23 +411,68 @@ function showAddLocationModal() {
     }
 }
 
-// Hide the add location modal
+// Add this function to your code
+function rebuildModalEventListeners() {
+    console.log("Rebuilding modal event listeners");
+    
+    // Remove any existing event listeners (not perfect but helps)
+    const closeBtn = document.querySelector('.close');
+    const saveBtn = document.getElementById('save-location');
+    
+    // Clone and replace to remove all listeners
+    const newCloseBtn = closeBtn.cloneNode(true);
+    closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+    
+    const newSaveBtn = saveBtn.cloneNode(true);
+    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+    
+    // Add fresh event listeners
+    newCloseBtn.addEventListener('click', function(e) {
+        console.log("Close button clicked");
+        e.preventDefault();
+        hideAddLocationModal();
+    });
+    
+    newSaveBtn.addEventListener('click', function(e) {
+        console.log("Save button clicked");
+        e.preventDefault();
+        saveNewLocation();
+    });
+    
+    // Add a direct click handler to the modal background for closing
+    const modal = document.getElementById('add-location-modal');
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            console.log("Clicked outside modal content");
+            hideAddLocationModal();
+        }
+    });
+}
+
+// Modify hideAddLocationModal to be more assertive
 function hideAddLocationModal() {
+    console.log("hideAddLocationModal called");
     const modal = document.getElementById('add-location-modal');
     modal.style.display = 'none';
+    
+    // Force it to be hidden with !important
+    modal.setAttribute('style', 'display: none !important');
     
     // Clear form fields
     document.getElementById('location-name').value = '';
     document.getElementById('location-date').value = '';
     document.getElementById('location-notes').value = '';
+    console.log("Modal should be hidden now");
 }
 
-// Save a new location
+// Modify your saveNewLocation function to include more debug info
 function saveNewLocation() {
     console.log("saveNewLocation called");
     const name = document.getElementById('location-name').value;
     const date = document.getElementById('location-date').value;
     const notes = document.getElementById('location-notes').value;
+    
+    console.log("Form values:", { name, date, notes, position: currentMarkerPosition });
     
     if (!name || !currentMarkerPosition) {
         alert('Please provide a name for this location');
@@ -432,13 +481,15 @@ function saveNewLocation() {
     
     // Create new destination object
     const newDestination = {
-        id: Date.now(), // Use timestamp as unique ID
+        id: Date.now(),
         name: name,
         date: date,
         notes: notes,
         lat: currentMarkerPosition.lat,
         lng: currentMarkerPosition.lng
     };
+    
+    console.log("New destination created:", newDestination);
     
     // Add to our trip data
     tripData.destinations.push(newDestination);
@@ -455,8 +506,11 @@ function saveNewLocation() {
     // Update the route
     updateRoute();
     
-    // Hide the modal
-    hideAddLocationModal();
+    console.log("About to hide modal");
+    // Hide the modal - try a more forceful approach
+    const modal = document.getElementById('add-location-modal');
+    modal.style.display = 'none';
+    console.log("Modal hidden");
 }
 
 // Add a marker to the map for a destination
