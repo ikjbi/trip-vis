@@ -14,6 +14,9 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+    <!-- Add this before your existing scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 <body>
     <div class="container">
         <header>
@@ -80,9 +83,8 @@
                 <div class="controls">
                     <button id="clear-route">Clear Route</button>
                     <button id="export-trip">Export Trip</button>
-                    <button id="google-login">Connect to Google Drive</button>
-                    <button id="save-to-drive" disabled>Save to Drive</button>
-                    <button id="load-from-drive" disabled>Load from Drive</button>
+                    <button id="save-to-db">Save to Cloud</button>
+                    <button id="load-from-db">Load from Cloud</button>
                 </div>
             </div>
             
@@ -110,6 +112,7 @@
             <button id="save-location">Save</button>
         </div>
     </div>
+
     
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

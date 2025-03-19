@@ -24,17 +24,22 @@ const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/res
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 const APP_FOLDER_NAME = 'TripPlanner';
 
-// Firebase configuration
+// Firebase configuration - replace with your actual Firebase project values
 const firebaseConfig = {
-    apiKey: "your-api-key", // Use your Firebase project's values
-    authDomain: "your-project-id.firebaseapp.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project-id.appspot.com"
+    apiKey: "AIzaSyCKGJbQ7keA8cN3lxZ58VOccpYtfVXpTF4",
+    authDomain: "trip-planner-aa105.firebaseapp.com",
+    projectId: "trip-planner-aa105",
+    storageBucket: "trip-planner-aa105.firebasestorage.app",
+    messagingSenderId: "543344768686",
+    appId: "1:543344768686:web:f6e2ab986d09c4dae19f3f",
+    measurementId: "G-C9ETYVC3QY"
   };
   
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
-  const storage = firebase.storage();
+  
+  // Initialize Firestore
+  const db = firebase.firestore();
 
 
 // Initialize the application when the DOM is fully loaded
@@ -164,10 +169,8 @@ function setupEventListeners() {
     document.getElementById('clear-route').addEventListener('click', clearRoute);
     document.getElementById('export-trip').addEventListener('click', exportTrip);
     
-    // Google Drive integration
-    document.getElementById('google-login').addEventListener('click', handleGoogleAuth);
-    document.getElementById('save-to-drive').addEventListener('click', saveAllTripsToDrive);
-    document.getElementById('load-from-drive').addEventListener('click', loadTripsFromDrive);
+    document.getElementById('save-to-db').addEventListener('click', saveTripsToFirestore);
+    document.getElementById('load-from-db').addEventListener('click', loadTripsFromFirestore);
     
     // Modal functionality
     document.querySelector('.close').addEventListener('click', function() {
