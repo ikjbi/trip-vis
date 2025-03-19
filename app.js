@@ -186,7 +186,7 @@ function saveTripsToFirestore() {
         alert('Failed to load trips from the cloud. Please try again.');
       });
   }
-  
+
 // Initialize the Leaflet map
 function initializeMap() {
     // Create a map centered on a default location (adjust as needed)
@@ -269,9 +269,8 @@ function setupEventListeners() {
         hideAddLocationModal();
     });
     
-    document.getElementById('save-location').addEventListener('click', function() {
-        saveNewLocation();
-    });
+    // With this simpler version
+    document.getElementById('save-location').addEventListener('click', saveNewLocation);
     
     // Add keyboard support for the modal (Escape to close, Enter to save)
     document.addEventListener('keydown', function(e) {
@@ -421,6 +420,7 @@ function hideAddLocationModal() {
 
 // Save a new location
 function saveNewLocation() {
+    console.log("saveNewLocation called");
     const name = document.getElementById('location-name').value;
     const date = document.getElementById('location-date').value;
     const notes = document.getElementById('location-notes').value;
