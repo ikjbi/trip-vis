@@ -104,6 +104,8 @@ function saveTripsToFirestore() {
     // Show loading indicator
     document.getElementById('save-to-db').disabled = true;
     document.getElementById('save-to-db').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+    
     
     // Create a unique user ID (you can implement proper authentication later)
     const userId = localStorage.getItem('tripPlannerUserId') || 'user_' + Date.now();
@@ -139,6 +141,7 @@ function saveTripsToFirestore() {
     // Show loading indicator
     document.getElementById('load-from-db').disabled = true;
     document.getElementById('load-from-db').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+
     
     // Get the user ID
     const userId = localStorage.getItem('tripPlannerUserId');
@@ -241,8 +244,8 @@ function setupEventListeners() {
     document.getElementById('delete-trip-button').addEventListener('click', deleteCurrentTrip);
     document.getElementById('trip-select').addEventListener('change', switchTrip);
 
-    document.getElementById('save-to-cloud').addEventListener('click', saveTripsToStorage);
-    document.getElementById('load-from-cloud').addEventListener('click', loadTripsFromStorage);
+    document.getElementById('save-to-db').addEventListener('click', saveTripsToStorage);
+    document.getElementById('load-from-db').addEventListener('click', loadTripsFromStorage);
     
     // Trip details form
     document.getElementById('trip-name').addEventListener('change', (e) => {
