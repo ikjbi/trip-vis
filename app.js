@@ -24,6 +24,17 @@ const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/res
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 const APP_FOLDER_NAME = 'TripPlanner';
 
+// Firebase configuration
+const firebaseConfig = {
+    apiKey: "your-api-key", // Use your Firebase project's values
+    authDomain: "your-project-id.firebaseapp.com",
+    projectId: "your-project-id",
+    storageBucket: "your-project-id.appspot.com"
+  };
+  
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const storage = firebase.storage();
 
 
 // Initialize the application when the DOM is fully loaded
@@ -128,6 +139,9 @@ function setupEventListeners() {
     document.getElementById('new-trip-button').addEventListener('click', createNewTrip);
     document.getElementById('delete-trip-button').addEventListener('click', deleteCurrentTrip);
     document.getElementById('trip-select').addEventListener('change', switchTrip);
+
+    document.getElementById('save-to-cloud').addEventListener('click', saveTripsToStorage);
+    document.getElementById('load-from-cloud').addEventListener('click', loadTripsFromStorage);
     
     // Trip details form
     document.getElementById('trip-name').addEventListener('change', (e) => {
@@ -705,6 +719,93 @@ function addDirectionsToggleButton() {
         }
     });
 }
+
+// Save trips to Firebase Storage
+function saveTripsToStorage() {
+    // Create a unique filename using timestamp
+    const fileName = `trips_${Date.now()}.json`;
+    const tripsData = JSON.stringify(allTrips);
+    
+    // Create a reference to the file location
+    const storageRef = storage.ref();
+    const fileRef = storageRef.child(`trips/${fileName}`);
+    
+    // Convert string to Blob for upload
+    const blob = new Blob([tripsData], {type: 'application/json'});
+    
+    // Upload the file
+    fileRef.put(blob)
+      .then((snapshot) => {
+        console.log('Trips saved to Firebase Storage');
+        
+        // Also save the latest filename to localStorage for easy retrieval
+        localStorage.setItem('latestTripsFile', fileName);
+        
+        alert('Your trips have been saved to the cloud! You can access them from any device.');
+      })
+      .catch((error) => {
+        console.error('Error saving trips:', error);
+        alert('Failed to save trips to the cloud. Please try again.');
+      });
+  }
+  
+  // Load trips from Firebase Storage
+  function loadTripsFromStorage() {
+    // Get the latest filename from localStorage
+    const fileName = localStorage.getItem('latestTripsFile');
+    
+    if (!fileName) {
+      alert('No saved trips found in the cloud.');
+      return;
+    }
+    
+    // Create a reference to the file
+    const storageRef = storage.ref();
+    const fileRef = storageRef.child(`trips/${fileName}`);
+    
+    // Get the download URL
+    fileRef.getDownloadURL()
+      .then((url) => {
+        // Fetch the file content
+        fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            if (confirm('This will replace your current trips with those from the cloud. Continue?')) {
+              // Update the trips data
+              allTrips = data;
+              
+              // If there are no trips, create a default one
+              if (allTrips.length === 0) {
+                createNewTrip();
+              } else {
+                // Set the first trip as current
+                tripData = allTrips[0];
+                currentTripId = tripData.id;
+                
+                // Clear the map
+                clearMapOnly();
+                
+                // Update UI
+                updateTripSelectOptions();
+                loadTripData(tripData);
+                
+                // Save to local storage
+                saveAllTrips();
+                
+                alert('Trips loaded from the cloud successfully!');
+              }
+            }
+          })
+          .catch(error => {
+            console.error('Error parsing trips data:', error);
+            alert('Error loading trips. The file might be corrupted.');
+          });
+      })
+      .catch((error) => {
+        console.error('Error loading trips file:', error);
+        alert('Failed to load trips from the cloud. Please try again.');
+      });
+  }
 
 // Style the routing container to be more readable
 function styleRoutingContainer() {
