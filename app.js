@@ -95,6 +95,98 @@ function addSearchOptions() {
     searchContainer.parentNode.insertBefore(searchOptions, searchContainer.nextSibling);
 }
 
+// Save trips to Firestore
+function saveTripsToFirestore() {
+    // Show loading indicator
+    document.getElementById('save-to-db').disabled = true;
+    document.getElementById('save-to-db').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    
+    // Create a unique user ID (you can implement proper authentication later)
+    const userId = localStorage.getItem('tripPlannerUserId') || 'user_' + Date.now();
+    localStorage.setItem('tripPlannerUserId', userId);
+    
+    // Save to Firestore
+    db.collection('users').doc(userId).set({
+      trips: allTrips,
+      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+      // Reset button
+      document.getElementById('save-to-db').disabled = false;
+      document.getElementById('save-to-db').innerHTML = 'Save to Cloud';
+      
+      // Show success message
+      alert('Trips saved to the cloud successfully!');
+    })
+    .catch((error) => {
+      console.error('Error saving trips:', error);
+      
+      // Reset button
+      document.getElementById('save-to-db').disabled = false;
+      document.getElementById('save-to-db').innerHTML = 'Save to Cloud';
+      
+      // Show error message
+      alert('Failed to save trips to the cloud. Please try again.');
+    });
+  }
+  
+  // Load trips from Firestore
+  function loadTripsFromFirestore() {
+    // Show loading indicator
+    document.getElementById('load-from-db').disabled = true;
+    document.getElementById('load-from-db').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    
+    // Get the user ID
+    const userId = localStorage.getItem('tripPlannerUserId');
+    
+    if (!userId) {
+      alert('No saved trips found. Save your trips first.');
+      
+      // Reset button
+      document.getElementById('load-from-db').disabled = false;
+      document.getElementById('load-from-db').innerHTML = 'Load from Cloud';
+      return;
+    }
+    
+    // Load from Firestore
+    db.collection('users').doc(userId).get()
+      .then((doc) => {
+        // Reset button
+        document.getElementById('load-from-db').disabled = false;
+        document.getElementById('load-from-db').innerHTML = 'Load from Cloud';
+        
+        if (doc.exists && doc.data().trips && doc.data().trips.length > 0) {
+          if (confirm('This will replace your current trips with those from the cloud. Continue?')) {
+            // Update trips data
+            allTrips = doc.data().trips;
+            
+            // Set first trip as current
+            tripData = allTrips[0];
+            currentTripId = tripData.id;
+            
+            // Update UI
+            clearMapOnly();
+            updateTripSelectOptions();
+            loadTripData(tripData);
+            saveAllTrips(); // Update local storage too
+            
+            alert('Trips loaded from the cloud successfully!');
+          }
+        } else {
+          alert('No saved trips found in the cloud.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error loading trips:', error);
+        
+        // Reset button
+        document.getElementById('load-from-db').disabled = false;
+        document.getElementById('load-from-db').innerHTML = 'Load from Cloud';
+        
+        alert('Failed to load trips from the cloud. Please try again.');
+      });
+  }
+  
 // Initialize the Leaflet map
 function initializeMap() {
     // Create a map centered on a default location (adjust as needed)
